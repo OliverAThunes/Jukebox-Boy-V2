@@ -6,6 +6,7 @@
 - Soundcloud support
 - Spotify support
 - Custom playlist
+- Dedicated queue channel
 
 ## License
 
