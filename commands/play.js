@@ -83,7 +83,7 @@ module.exports = {
   }
 }
 
-async function playSong(interaction, song) {
+function playSong(interaction, song) {
 
   // Connect to voice channel
   const connection = joinVoiceChannel({
@@ -104,24 +104,31 @@ async function playSong(interaction, song) {
   );
 
   let audioResource = createAudioResource(stream, {
-    inputType: StreamType.Arbitrary
+    inputType: StreamType.Arbitrary,
+    inlineVolume: true
   });
 
+  audioResource.volume.setVolume(0.2);
+
+  console.log("Playing song");
   player.play(audioResource);
 
-  player.on(AudioPlayerStatus.Playing, async event => {
+  player.on(AudioPlayerStatus.Playing, event => {
     const embed = createEmbed(song);
     interaction.channel.send({embeds: [embed]});
   });
 
   player.on(AudioPlayerStatus.Idle, () => {
+    console.log("Finished playing song");
     let serverQueue = queue.get(interaction.guild.id);
 
     serverQueue.shift();
 
     if (serverQueue && serverQueue.length > 0) {
+      console.log("Playing next song");
       playSong(interaction, serverQueue[0]);
     } else {
+      console.log("Queue empty, stopping.");
       queue.delete(interaction.guildId);
     }
   });
