@@ -2,7 +2,6 @@
 
 ## Todo
 
-- Song queue
 - Soundcloud support
 - Spotify support
 - Custom playlist
