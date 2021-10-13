@@ -56,7 +56,6 @@ module.exports = {
     // Queue stuff
     let serverQueue = queue.get(interaction.guild.id);
 
-    console.log(serverQueue);
 
     if (!serverQueue) {
 
@@ -69,7 +68,7 @@ module.exports = {
 
         await interaction.deleteReply();
         playSong(interaction, songs[0]);
-        
+
       } catch (err) {
         queue.delete(interaction.guildId);
         console.error("There was an error connecting to voice channel.", err);
@@ -96,7 +95,13 @@ async function playSong(interaction, song) {
   const player = createAudioPlayer();
   connection.subscribe(player);
 
-  const stream = ytdl(song.url, {filter: 'audio', quality: 'highestaudio'});
+  const stream = ytdl(
+    song.url,
+    {
+      f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+    },
+    { stdio: ['ignore', 'pipe', 'ignore'] },
+  );
 
   let audioResource = createAudioResource(stream, {
     inputType: StreamType.Arbitrary
@@ -116,6 +121,8 @@ async function playSong(interaction, song) {
 
     if (serverQueue && serverQueue.length > 0) {
       playSong(interaction, serverQueue[0]);
+    } else {
+      queue.delete(interaction.guildId);
     }
   });
 }
