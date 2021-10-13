@@ -1,5 +1,14 @@
 # Jukebox-Boy-V2
 
-Todo:
-Queue
-Custom playlist
+## Todo
+
+- Song queue
+- Soundcloud support
+- Spotify support
+- Custom playlist
+
+## License
+
+MIT
+
+**Free Software, Hell Yeah!**
