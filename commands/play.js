@@ -30,7 +30,6 @@ module.exports = {
 
     await interaction.reply("Searching...");
 
-
     // Find video
     const findVideo = async (query) => {
       const videoResult = await ytSearch(query);
@@ -39,36 +38,27 @@ module.exports = {
 
     const searchString = interaction.options.getString('query');
 
-    const video = await findVideo(searchString);
+    const song = await findVideo(searchString);
 
-    let song = {};
-
-    if (video) {
-      song = {...video};
-
-    } else {
+    if (!song) {
       await interaction.editReply('No videos found...');
       console.log("Could not find video with query", searchString);
       return;
     }
 
-
     // Queue stuff
     let serverQueue = queue.get(interaction.guild.id);
 
-
+    // If no queue for this guild, create one.
     if (!serverQueue) {
-
       let songs = [];
       queue.set(interaction.guildId, songs);
 
       songs.push(song);
 
       try {
-
         await interaction.deleteReply();
         playSong(interaction, songs[0]);
-
       } catch (err) {
         queue.delete(interaction.guildId);
         console.error("There was an error connecting to voice channel.", err);
