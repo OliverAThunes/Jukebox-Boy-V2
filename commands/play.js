@@ -85,14 +85,17 @@ function playSong(interaction, song) {
   const player = createAudioPlayer();
   connection.subscribe(player);
 
+  // Get stream
   const stream = ytdl(
     song.url,
     {
-      f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
-    },
-    { stdio: ['ignore', 'pipe', 'ignore'] },
+      filter: 'audioonly',
+      quality: 'highestaudio',
+      dlChunkSize: 0,
+    }
   );
 
+  // Create resource
   let audioResource = createAudioResource(stream, {
     inputType: StreamType.Arbitrary,
     inlineVolume: true
@@ -102,6 +105,11 @@ function playSong(interaction, song) {
 
   console.log("Playing song");
   player.play(audioResource);
+
+  // Handle error on player
+  player.on('error', (err) => {
+    console.error(`Error: ${err.message}\n${err}`);
+  });
 
   player.on(AudioPlayerStatus.Playing, event => {
     const embed = createEmbed(song);
