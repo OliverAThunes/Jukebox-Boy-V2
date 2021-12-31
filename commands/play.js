@@ -31,7 +31,7 @@ module.exports = {
     // TODO Add a check if the user is in an voice channel.
 
     console.log("Searching for song");
-    await interaction.reply("Letær etter videon");
+    await interaction.reply("Letær etter videon...");
 
     // Find video
     const findVideo = async (query) => {
@@ -52,7 +52,7 @@ module.exports = {
     const song = await findVideo(searchString);
 
     if (!song) {
-      await interaction.editReply('No videos found...');
+      await interaction.editReply('Fantn ikke...');
       console.log("Could not find video with query", searchString);
       return;
     }
