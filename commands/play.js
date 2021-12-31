@@ -35,8 +35,16 @@ module.exports = {
 
     // Find video
     const findVideo = async (query) => {
-      const videoResult = await ytSearch(query);
-      return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+      const youtubePattern = "/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/"
+      let result = null;
+      if (query.match(youtubePattern)) {
+        result = await ytdl.getInfo(query);
+      }
+
+      if (result === null)
+        result = await ytSearch(query);
+
+      return (result.videos.length > 1) ? result.videos[0] : null;
     }
 
     const searchString = interaction.options.getString('query');
