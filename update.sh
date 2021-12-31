@@ -1,4 +1,5 @@
 #!/bin/sh
+cd Jukebox-Boy-V2
 echo "Updating bot"
 git pull
 npm i
@@ -9,5 +10,5 @@ echo "Running bot"
 sleep 2
 clear
 node index.js
-
+cd ~
 
