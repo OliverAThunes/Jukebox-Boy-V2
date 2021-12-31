@@ -1,5 +1,6 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {MessageEmbed} = require('discord.js');
+const {subscriptions} = require('../globals')
 
 const {
   joinVoiceChannel,
@@ -85,12 +86,13 @@ function playSong(interaction, song) {
     adapterCreator: interaction.guild.voiceAdapterCreator
   });
 
-  connection.on('stateChange', (e) => {
-    console.log('Connecting to voice', e);
-  })
-
   const player = createAudioPlayer();
   connection.subscribe(player);
+
+  subscriptions.set(interaction.guild.id, {
+    audioPlayer: player,
+    connection: connection
+  });
 
   // Get stream
   const stream = ytdl(
@@ -105,7 +107,10 @@ function playSong(interaction, song) {
   // Create resource
   let audioResource = createAudioResource(stream, {
     inputType: StreamType.Arbitrary,
-    inlineVolume: true
+    inlineVolume: true,
+    metadata: {
+      serverQueue: queue.get(interaction.guild.id)
+    }
   });
 
   audioResource.volume.setVolume(0.2);
