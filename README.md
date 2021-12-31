@@ -7,6 +7,7 @@
 - Custom playlist
 - Dedicated queue channel
 - Play NOW!!! feature (skip queue)
+- Voice recognition
 
 ## License
 
