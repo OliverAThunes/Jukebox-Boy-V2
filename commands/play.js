@@ -6,7 +6,8 @@ const {
   createAudioPlayer,
   createAudioResource,
   StreamType,
-  AudioPlayerStatus
+  AudioPlayerStatus,
+  VoiceConnectionStatus
 } = require('@discordjs/voice');
 
 const ytdl = require('ytdl-core');
@@ -28,6 +29,7 @@ module.exports = {
 
     // TODO Add a check if the user is in an voice channel.
 
+    console.log("Searching for song");
     await interaction.reply("Searching...");
 
     // Find video
@@ -76,11 +78,16 @@ module.exports = {
 function playSong(interaction, song) {
 
   // Connect to voice channel
+  console.log("Joining voice channel");
   const connection = joinVoiceChannel({
     channelId: interaction.member.voice.channel.id,
-    guildId: process.env.GUILD_ID,
+    guildId: interaction.member.guild.id,
     adapterCreator: interaction.guild.voiceAdapterCreator
   });
+
+  connection.on('stateChange', (e) => {
+    console.log('Connecting to voice', e);
+  })
 
   const player = createAudioPlayer();
   connection.subscribe(player);

@@ -1,10 +1,11 @@
 require('dotenv').config()
 
 const fs = require('fs');
-const { Client, Collection, Intents } = require('discord.js');
+const {Client, Collection, Intents} = require('discord.js');
 
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
+const intents = new Intents([Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES]);
+const client = new Client({intents});
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -16,7 +17,7 @@ for (const file of commandFiles) {
 
 // When the client is ready, run this code (only once)
 client.once('ready', (c) => {
-	console.log(`Ready! Logged in as ${c.user.tag}`);
+  console.log(`Ready! Logged in as ${c.user.tag}`);
 });
 
 client.on('interactionCreate', async interaction => {
@@ -30,7 +31,7 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
   }
 });
 
