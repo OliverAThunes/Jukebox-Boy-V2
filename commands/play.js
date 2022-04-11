@@ -149,7 +149,7 @@ function createEmbed(song) {
     .setColor("#0099ff")
     .setTitle(song.title)
     .setURL(song.url)
-    .setAuthor(song.author.name, song.thumbnail, song.author.url)
+    .setAuthor(song.author.name)
     .setDescription("Duration: " + song.timestamp)
     .setImage(song.image);
 }

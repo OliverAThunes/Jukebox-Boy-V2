@@ -13,11 +13,10 @@ Current options.
 
 ## Todo
 
-- Config
-- Volume command
 - Logging to file
 - Soundcloud support
 - Spotify support
+- Volume command
 - Custom playlist
 - Dedicated queue channel
 - Stay in channel always
