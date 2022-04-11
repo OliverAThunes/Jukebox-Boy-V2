@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
-const { subscriptions } = require("../globals");
+const { subscriptions, serverQueues, configs } = require("../globals");
 
 const {
   joinVoiceChannel,
@@ -13,9 +13,6 @@ const {
 
 const ytdl = require("ytdl-core");
 const ytSearch = require("yt-search");
-
-// Global list of all servers and their queues.
-let queue = new Map();
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -58,12 +55,12 @@ module.exports = {
     }
 
     // Queue stuff
-    let serverQueue = queue.get(interaction.guild.id);
+    let serverQueue = serverQueues.get(interaction.guild.id);
 
     // If no queue for this guild, create one.
     if (!serverQueue) {
       let songs = [];
-      queue.set(interaction.guildId, songs);
+      serverQueues.set(interaction.guildId, songs);
 
       songs.push(song);
 
@@ -71,7 +68,7 @@ module.exports = {
         await interaction.deleteReply();
         playSong(interaction, songs[0]);
       } catch (err) {
-        queue.delete(interaction.guildId);
+        serverQueues.delete(interaction.guildId);
         console.error("There was an error connecting to voice channel.", err);
         throw err;
       }
@@ -112,11 +109,11 @@ function playSong(interaction, song) {
     inputType: StreamType.Arbitrary,
     inlineVolume: true,
     metadata: {
-      serverQueue: queue.get(interaction.guild.id),
+      serverQueue: serverQueues.get(interaction.guild.id),
     },
   });
 
-  audioResource.volume.setVolume(0.2);
+  audioResource.volume.setVolume(configs.volume);
 
   console.log("Playing song");
   player.play(audioResource);
@@ -133,7 +130,7 @@ function playSong(interaction, song) {
 
   player.on(AudioPlayerStatus.Idle, () => {
     console.log("Finished playing song");
-    let serverQueue = queue.get(interaction.guild.id);
+    let serverQueue = serverQueues.get(interaction.guild.id);
 
     serverQueue.shift();
 
@@ -142,7 +139,7 @@ function playSong(interaction, song) {
       playSong(interaction, serverQueue[0]);
     } else {
       console.log("Queue empty, stopping.");
-      queue.delete(interaction.guildId);
+      serverQueues.delete(interaction.guildId);
     }
   });
 }
